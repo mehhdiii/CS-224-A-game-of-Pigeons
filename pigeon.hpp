@@ -3,12 +3,11 @@
 class Pigeon{
     public:
     SDL_Texture* assets;
-    SDL_Renderer* renderer;
-    SDL_Rect src[3];
+    // SDL_Renderer* renderer;
+    SDL_Rect src;
     int frame=0;
     SDL_Rect mover = {50,50,50,50};
-    void fly();
-    void draw();
-    Pigeon(SDL_Renderer*, SDL_Texture*);
+    void draw(SDL_Renderer*);
+    Pigeon(SDL_Texture*);
     Pigeon();
 };

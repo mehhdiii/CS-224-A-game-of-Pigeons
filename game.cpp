@@ -1,6 +1,5 @@
 #include "game.hpp"
 #include "pigeon.hpp"
-
 bool Game::init()
 {
 	//Initialization flag
@@ -113,7 +112,6 @@ SDL_Texture* Game::loadTexture( std::string path )
 
 	return newTexture;
 }
-
 void Game::run( )
 {
     SDL_RenderClear( gRenderer );
@@ -124,9 +122,9 @@ void Game::run( )
 	SDL_Event e;
 	Pigeon pigeons[10];
 	for (int i=0;i<10;i++){
-		pigeons[i].mover.y=i*50;
-		pigeons[i].renderer=gRenderer;
-		pigeons[i].assets=assets;
+		pigeons[i].mover.x = random() % 700;
+		pigeons[i].mover.y = random() % 500;
+		pigeons[i].assets = assets;
 	}
 
 	//While application is running
@@ -145,7 +143,7 @@ void Game::run( )
 		}
 		SDL_RenderClear(gRenderer);
 		for(int i=0;i<10;i++)
-			pigeons[i].fly();
+			pigeons[i].draw(gRenderer);
     	SDL_RenderPresent(gRenderer);
 	    SDL_Delay(5);	
 	}

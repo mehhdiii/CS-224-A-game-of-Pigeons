@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <iostream>
 #include <string>
+#include <stdlib.h>
 
 class Game{
     //Screen dimension constants
@@ -29,3 +30,4 @@ public:
     SDL_Texture* loadTexture( std::string path );
     void run();
 };
+
