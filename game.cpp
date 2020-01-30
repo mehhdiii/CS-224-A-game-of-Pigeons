@@ -166,7 +166,7 @@ void Game::run( )
 		for(int i=0;i<10;i++)
 			pigeons[i].draw(gRenderer);	//draws object on renderer
     	SDL_RenderPresent(gRenderer); //displays the updated renderer
-	    SDL_Delay(5);	//causes sdl engine to delay for specified miliseconds
+	    SDL_Delay(200);	//causes sdl engine to delay for specified miliseconds
 	}
 			
 }
