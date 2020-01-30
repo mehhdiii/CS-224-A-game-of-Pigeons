@@ -1,6 +1,6 @@
 #include "game.hpp"
 
-int main(){
+int main(int argc, char *argv[]){
     Game game;
     if( !game.init() ){
 		printf( "Failed to initialize!\n" );

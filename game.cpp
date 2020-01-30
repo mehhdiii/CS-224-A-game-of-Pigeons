@@ -138,14 +138,35 @@ void Game::run( )
 			{
 				quit = true;
 			}
+
+			if( e.type == SDL_MOUSEBUTTONDOWN){
+				if(e.button.button == SDL_BUTTON_LEFT){
+					//this is a good location to add pigeon in linked list.
+					int xMouse, yMouse;
+					SDL_GetMouseState(&xMouse,&yMouse);
+					std::cout<<"Left button pressed at : x = "<<xMouse<<" , y = "<<yMouse<<std::endl;
+				}
+
+				
+			
+				else if(e.button.button == SDL_BUTTON_RIGHT){
+					//this is a good location to remove last pigeon from linked list.
+					int xMouse, yMouse;
+					SDL_GetMouseState(&xMouse,&yMouse);
+					std::cout<<"Right button pressed at : x = "<<xMouse<<" , y = "<<yMouse<<std::endl;
+				}
+
+				
+			}
 			
 			// update();	
 		}
-		SDL_RenderClear(gRenderer);
+		SDL_RenderClear(gRenderer); //removes everything from renderer
+		//draw the objects here
 		for(int i=0;i<10;i++)
-			pigeons[i].draw(gRenderer);
-    	SDL_RenderPresent(gRenderer);
-	    SDL_Delay(5);	
+			pigeons[i].draw(gRenderer);	//draws object on renderer
+    	SDL_RenderPresent(gRenderer); //displays the updated renderer
+	    SDL_Delay(5);	//causes sdl engine to delay for specified miliseconds
 	}
 			
 }
