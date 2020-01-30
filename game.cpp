@@ -126,6 +126,7 @@ void Game::run( )
 		pigeons[i].mover.y = random() % 500;
 		pigeons[i].assets = assets;
 	}
+	
 
 	//While application is running
 	while( !quit )

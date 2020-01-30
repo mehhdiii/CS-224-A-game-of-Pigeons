@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include <stdlib.h>
+#include <time.h>
 
 class Game{
     //Screen dimension constants
