@@ -58,9 +58,10 @@ bool Game::loadMedia(std::string media)
 {
 	//Loading success flag
 	bool success = true;
-
+	
 	assets = loadTexture(media);
-    if(assets==NULL)
+    gTexture = loadTexture("hu.png");
+	if(assets==NULL || gTexture==NULL)
     {
         printf("Unable to run due to error: %s\n",SDL_GetError());
         success =false;
@@ -74,6 +75,7 @@ void Game::close()
 	//Free loaded images
 	SDL_DestroyTexture(assets);
 	assets=NULL;
+	SDL_DestroyTexture(gTexture);
 	
 	//Destroy window
 	SDL_DestroyRenderer( gRenderer );
@@ -122,8 +124,8 @@ void Game::run( )
 	SDL_Event e;
 	Pigeon pigeons[10];
 	for (int i=0;i<10;i++){
-		pigeons[i].mover.x = random() % 700;
-		pigeons[i].mover.y = random() % 500;
+		pigeons[i].mover.x = rand() % 700;
+		pigeons[i].mover.y = rand() % 500;
 		pigeons[i].assets = assets;
 	}
 	
@@ -163,6 +165,7 @@ void Game::run( )
 			// update();	
 		}
 		SDL_RenderClear(gRenderer); //removes everything from renderer
+		SDL_RenderCopy(gRenderer, gTexture, NULL, NULL);
 		//draw the objects here
 		for(int i=0;i<10;i++)
 			pigeons[i].draw(gRenderer);	//draws object on renderer
