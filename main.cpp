@@ -8,7 +8,7 @@ int main(int argc, char *argv[]){
         return 0;
 	}
 		//Load media
-    if( !game.loadMedia("assets.png") ){
+    if( !game.loadMedia() ){
         printf( "Failed to load media!\n" );
         return 0;
     }

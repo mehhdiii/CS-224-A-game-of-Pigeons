@@ -27,7 +27,7 @@ class Game{
 public:
 
     bool init();
-    bool loadMedia(std::string);
+    bool loadMedia();
     void close();
     SDL_Texture* loadTexture( std::string path );
     void run();

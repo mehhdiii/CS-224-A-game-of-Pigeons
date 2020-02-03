@@ -20,7 +20,7 @@ bool Game::init()
 		}
 
 		//Create window
-		gWindow = SDL_CreateWindow( "SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN );
+		gWindow = SDL_CreateWindow( "HU Life", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN );
 		if( gWindow == NULL )
 		{
 			printf( "Window could not be created! SDL Error: %s\n", SDL_GetError() );
@@ -54,12 +54,12 @@ bool Game::init()
 	return success;
 }
 
-bool Game::loadMedia(std::string media)
+bool Game::loadMedia()
 {
 	//Loading success flag
 	bool success = true;
 	
-	assets = loadTexture(media);
+	assets = loadTexture("assets.png");
     gTexture = loadTexture("hu.png");
 	if(assets==NULL || gTexture==NULL)
     {
@@ -165,7 +165,7 @@ void Game::run( )
 			// update();	
 		}
 		SDL_RenderClear(gRenderer); //removes everything from renderer
-		SDL_RenderCopy(gRenderer, gTexture, NULL, NULL);
+		SDL_RenderCopy(gRenderer, gTexture, NULL, NULL);//Draws background to renderer
 		//draw the objects here
 		for(int i=0;i<10;i++)
 			pigeons[i].draw(gRenderer);	//draws object on renderer
