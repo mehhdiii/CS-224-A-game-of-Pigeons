@@ -3,7 +3,8 @@
         {
             "name": "Linux",
             "includePath": [
-                "${workspaceFolder}/**"
+                "${workspaceFolder}/**",
+                "c:/mingw_dev_lib/include/SDL2"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/gcc",

@@ -5,6 +5,13 @@
 #include <string>
 #include <stdlib.h>
 #include <time.h>
+#include <list>
+
+#include "pigeon.hpp"
+#include "egg.hpp"
+#include "nest.hpp"
+#pragma once
+using namespace std;
 
 class Game{
     //Screen dimension constants
@@ -21,6 +28,11 @@ class Game{
     SDL_Texture* gTexture = NULL;
     //global reference to png image sheets
     SDL_Texture* assets=NULL;
+
+    list<Pigeon*> pigeons;
+    list<Egg*> eggs;
+    list<Nest*> nests;
+
     
 
 
@@ -31,5 +43,8 @@ public:
     void close();
     SDL_Texture* loadTexture( std::string path );
     void run();
+    void update();
+    void checkCollision();
+    void drawAllObjects();
 };
 
