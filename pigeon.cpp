@@ -25,9 +25,12 @@ void Pigeon::draw(SDL_Renderer * renderer){
     // cout << "drawing pigeon" <<endl;
     SDL_RenderCopy(renderer, assets, &src[frame], &mover);
     frame++;
-    if (frame==3) frame = 0;
-    mover.x+=5;
-    //moving up with 50% probability
+    if (frame==3) frame = 0; 
+    if (mover.x<SCREEN_WIDTH-50){
+        mover.x+=5;
+    }
+    
+
     if (mover.y >50 ){
         //speed 1x
         mover.y-=2;

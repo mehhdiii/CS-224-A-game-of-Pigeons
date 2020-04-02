@@ -1,6 +1,7 @@
 #pragma once
 #include <SDL.h>
 #include <SDL_image.h>
+#include <SDL_mixer.h>
 #include <stdio.h>
 #include <iostream>
 #include <string>
@@ -31,13 +32,18 @@ class Game{
 
     //You may use C++ linked lists, or you can create your own.
 
+    
 
     list<Unit*> items;   
     list <Pigeon*> pigeons;
     list<Egg*> eggs;
     list<Nest*> nests;
 
-
+    //sound variables:
+    Mix_Chunk *eggy = NULL; //egg splash.
+    Mix_Music *background_music = NULL; //plays in the background
+    Mix_Chunk *bird1 = NULL;
+    Mix_Chunk *bird2 = NULL;
 public:
 
     bool init();

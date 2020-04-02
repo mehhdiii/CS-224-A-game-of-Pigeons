@@ -9,7 +9,7 @@ bool Game::init()
 	bool success = true;
 
 	//Initialize SDL
-	if( SDL_Init( SDL_INIT_VIDEO /*| SDL_INIT_AUDIO*/ ) < 0 )
+	if( SDL_Init( SDL_INIT_VIDEO | SDL_INIT_AUDIO ) < 0 )
 	{
 		printf( "SDL could not initialize! SDL Error: %s\n", SDL_GetError() );
 		success = false;
@@ -50,6 +50,11 @@ bool Game::init()
 					printf( "SDL_image could not initialize! SDL_image Error: %s\n", IMG_GetError() );
 					success = false;
 				}
+				if( Mix_OpenAudio( 44100, MIX_DEFAULT_FORMAT, 2, 2048 ) < 0 )
+				{
+					printf( "SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError() );
+					success = false;
+				}
 			}
 		}
 	}
@@ -70,7 +75,17 @@ bool Game::loadMedia()
         printf("Unable to run due to error: %s\n",SDL_GetError());
         success =false;
     }
-
+	//loading all music for the game:
+	eggy = Mix_LoadWAV( "eggy_splash.wav" );
+	background_music = Mix_LoadMUS("Waltz-music-loop/Waltz-music-loop.wav");
+	bird1 = Mix_LoadWAV("Waltz-music-loop/bird1.wav");
+	bird2 = Mix_LoadWAV("Waltz-music-loop/bird2.wav");
+	if( eggy == NULL || background_music ==NULL || bird1==NULL || bird2==NULL)
+	{
+		printf( "Failed to load beat music! SDL_mixer Error: %s\n", Mix_GetError() );
+		success = false;
+	}
+	
 	return success;
 }
 
@@ -80,7 +95,12 @@ void Game::close()
 	SDL_DestroyTexture(assets);
 	assets=NULL;
 	SDL_DestroyTexture(gTexture);
-	
+	//free sound:
+
+	Mix_FreeChunk(eggy);
+	Mix_FreeMusic(background_music);
+	background_music =NULL;
+	eggy =NULL;
 	//Destroy window
 	SDL_DestroyRenderer( gRenderer );
 	SDL_DestroyWindow( gWindow );
@@ -128,14 +148,21 @@ void Game::updateEggs(){
 	int x_range = 25;
 	int y_range = 25;
 	for (list<Egg*>::iterator i = eggs.begin(); i!=eggs.end(); i++){
-		// int x_start = 235;
+		
 		for (list<Nest*>::iterator j = nests.begin(); j!=nests.end(); j++){
-			if (/*(*i)->mover.x >= (*j)->mover.x  &&*/(*i)->mover.x <= (*j)->mover.x+x_range && (*i)->mover.x >= (*j)->mover.x-x_range && (*i)->mover.y <= (*j)->mover.y+y_range && (*i)->mover.y >= (*j)->mover.y-y_range){
+			//check for a collision:
+			if ( (*i)->mover.x >= (*j)->mover.x  && (*i)->mover.x <= (*j)->mover.x+x_range && (*i)->mover.x >= (*j)->mover.x-x_range && (*i)->mover.y <= (*j)->mover.y+y_range && (*i)->mover.y >= (*j)->mover.y-y_range){
+				Mix_PlayChannel( -1, eggy, 0 ); //play the egg breaking sound here
 				eggs.remove(*i);
+				nests.remove(*j); //remove the collided nest as well. or you can make the nest highlighted so that it is removed in the next collision
 				break;
 			}
-		}
+			
 		
+		}
+		if((*i)->mover.y>SCREEN_HEIGHT-50){
+			eggs.remove(*i);
+		}
 
 		
 	}
@@ -210,6 +237,12 @@ void Game::run( )
 	//While application is running
 	while( !quit )
 	{
+		//play the background music
+		if( Mix_PlayingMusic() == 0 )
+			{
+			//Play the music
+			Mix_PlayMusic( background_music, 1 );
+		}
 		//Handle events on queue
 		while( SDL_PollEvent( &e ) != 0 )
 		{
@@ -227,9 +260,15 @@ void Game::run( )
 				if(yMouse < 300){
 					// Create a new Pigeon
 					Pigeon *mypigeon = new Pigeon(assets);
+					if(xMouse>SCREEN_WIDTH-50){
+						mypigeon->mover.x = SCREEN_WIDTH-50;
+						mypigeon->mover.y = yMouse;
+					}
+					else{
+						mypigeon->mover.x = xMouse;
+						mypigeon->mover.y = yMouse;
+					}				
 					
-					mypigeon->mover.x = xMouse;
-					mypigeon->mover.y = yMouse;
 					// pigeons.push_back(mypigeon);
 					pigeons.push_back(mypigeon);
 					// mypigeon->assets = assets;
@@ -245,6 +284,7 @@ void Game::run( )
 					// cout << "nest created!" <<endl;
 				}
 				
+				
 			}
 		}
 
@@ -258,7 +298,7 @@ void Game::run( )
 
 
 		SDL_RenderPresent(gRenderer); //displays the updated renderer
-		SDL_Delay(200);	//causes sdl engine to delay for specified miliseconds
+		SDL_Delay(80);	//causes sdl engine to delay for specified miliseconds
 		
 	}
 			
