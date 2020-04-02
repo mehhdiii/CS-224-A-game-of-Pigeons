@@ -13,9 +13,12 @@ Pigeon::Pigeon(SDL_Texture* texture ): Unit(texture){
 }
 bool Pigeon::layEgg(){
     // SDL_RenderCopy(renderer, assets, ->, &mover);
-    if (eggsLaid<4)
+    if (eggsLaid<4){
+        eggsLaid++;
         return true;
+    }
     else
+        // eggsLaid++;
         return false;
 }
 void Pigeon::draw(SDL_Renderer * renderer){
@@ -30,12 +33,7 @@ void Pigeon::draw(SDL_Renderer * renderer){
         mover.y-=2;
     }
 
-    if (layEgg()){
-        Egg * myob = new Egg(assets);
-        myob->mover.x = mover.x;
-        myob->mover.y = mover.y;
-        myob->draw(renderer);
-    }
+
     //moving down with 20% probability
     // else {/*if (mover.y&& rand()%8 ==0){*/ //set and condition for return journey
     //     cout << "running" <<endl;
@@ -47,6 +45,12 @@ void Pigeon::draw(SDL_Renderer * renderer){
     //     SDL_RenderCopy(renderer, assets, &src[3], &mover);
     //     mover.y-=20;
     // }
+}
+
+bool Pigeon::isAlive(){
+    // return layEgg();
+    return (eggsLaid<4);
+
 }
 
 Pigeon::~Pigeon(){

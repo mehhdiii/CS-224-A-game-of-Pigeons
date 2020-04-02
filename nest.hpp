@@ -2,6 +2,7 @@
 #pragma once
 class Nest: public Unit{
     SDL_Rect src; 
+    
 public:
     Nest(SDL_Texture* tex);
     Nest(SDL_Texture*, SDL_Rect);

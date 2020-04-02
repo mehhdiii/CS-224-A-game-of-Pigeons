@@ -123,16 +123,32 @@ void Game::updateEggs(){
 	//check the collision of eggs and nests here
 	//If an egg is dropped in a nest, produce a new baby pigeon
 	//if the egg is dropped on floor, remove it from list.
+	// if(items)
+	//
+	int floor_x = SCREEN_WIDTH;
+	int floor_y =  SCREEN_HEIGHT;
+
 }
 void Game::updatePigeons(){
 	//Iterate over the link list of pigeons and generated eggs with 2% probability
 	//Remove such pigeons from the list which have laid 4 eggs.
 	for (list<Pigeon*>::iterator i = pigeons.begin(); i!=pigeons.end(); i++){
-		if(!((*i)->isAlive())){
+		if(!(*i)->isAlive()){
+			//removing pigeon:
 			pigeons.pop_back();
 		}
 		else{
-			(*i)->layEgg();
+			if(rand()%50==0 ){
+
+				(*i)->layEgg();
+				Egg * newobj = new Egg(assets);
+				newobj->mover.x = (*i)->mover.x+4;
+				newobj->mover.y = (*i)->mover.y+40;
+				items.push_back(newobj);
+				
+				
+			}
+			
 		}
 		// else{
 		// 	Egg * myob = new Egg(assets);
@@ -156,8 +172,8 @@ void Game::drawAllObjects(){
 		// }
 		for(list<Unit*>::iterator ii =  items.begin(); ii!=items.end(); ii++){
 			(*ii)->draw(gRenderer);
-
 		}
+
 		for (list<Pigeon*>::iterator i = pigeons.begin(); i!=pigeons.end(); i++){
 			(*i)->draw(gRenderer);
 		}
@@ -203,7 +219,6 @@ void Game::run( )
 				else{
 					// Create a new Nest
 					Nest *mynest = new Nest(assets);
-					
 					mynest->mover.x = xMouse-20;
 					mynest->mover.y = yMouse-20;
 					// nests.push_back(mynest);
