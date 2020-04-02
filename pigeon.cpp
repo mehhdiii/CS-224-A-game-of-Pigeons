@@ -1,51 +1,54 @@
 #include "pigeon.hpp"
+#include<iostream>
 
+using namespace std;
 
-void Pigeon::draw(SDL_Renderer *renderer){
-    Unit::src = src[frame];
-    Unit::draw(renderer);    
-    frame++;
-    if (frame==3) frame = 0;
-    if (baby){
-        mover.w++;
-        mover.h++;
-    } 
-    if(mover.w>=50) baby = false;
-    
-    if(mover.y>20){
-        if(mover.x < 700) mover.x+=rand()%10;
-        mover.y-=rand()%10;
-    }
-}
-
-Pigeon::Pigeon(SDL_Texture* tex):Unit(tex){
+Pigeon::Pigeon(SDL_Texture* texture ): Unit(texture){
     src[0] = {0,0,160,133};
     src[1] = {0,133,160,133};
     src[2] = {0,266,160,133};
+    // src[3] = {226, 12, 360, 190};
+    // assets = tex;
 
-    mover.x = rand() % 800;
-    mover.y = 50;
-    mover.h  = mover.w = 50;
-    eggsLaid = 0;
-    frame = 0;
-    baby = false;    
 }
-
-Pigeon::Pigeon(SDL_Texture* tex, SDL_Rect rect): Pigeon(tex){
-    mover.x = rect.x;
-    mover.y = rect.y;
-}
-Pigeon::Pigeon(SDL_Texture* tex, SDL_Rect rect, bool bab): Pigeon(tex, rect){
-    baby = bab;
-    mover.h = mover.w = 5;
-}
-
 bool Pigeon::layEgg(){
-    if (baby) return false;
-    eggsLaid++;
-    return true;
+    // SDL_RenderCopy(renderer, assets, ->, &mover);
+    if (eggsLaid<4)
+        return true;
+    else
+        return false;
+}
+void Pigeon::draw(SDL_Renderer * renderer){
+    // cout << "drawing pigeon" <<endl;
+    SDL_RenderCopy(renderer, assets, &src[frame], &mover);
+    frame++;
+    if (frame==3) frame = 0;
+    mover.x+=5;
+    //moving up with 50% probability
+    if (mover.y >50 ){
+        //speed 1x
+        mover.y-=2;
+    }
+
+    if (layEgg()){
+        Egg * myob = new Egg(assets);
+        myob->mover.x = mover.x;
+        myob->mover.y = mover.y;
+        myob->draw(renderer);
+    }
+    //moving down with 20% probability
+    // else {/*if (mover.y&& rand()%8 ==0){*/ //set and condition for return journey
+    //     cout << "running" <<endl;
+    //     mover.y+=5;
+    // }
+    // }
+    // if(layEgg()){
+    //     mover.y+=20;
+    //     SDL_RenderCopy(renderer, assets, &src[3], &mover);
+    //     mover.y-=20;
+    // }
 }
 
-bool Pigeon::isAlive(){
-    return eggsLaid >= 4;
+Pigeon::~Pigeon(){
+
 }

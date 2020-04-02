@@ -1,12 +1,15 @@
 #include "game.hpp"
-
+#include<iostream>
+#include <typeinfo>
+using namespace std;
+#include<list>
 bool Game::init()
 {
 	//Initialization flag
 	bool success = true;
 
 	//Initialize SDL
-	if( SDL_Init( SDL_INIT_VIDEO ) < 0 )
+	if( SDL_Init( SDL_INIT_VIDEO /*| SDL_INIT_AUDIO*/ ) < 0 )
 	{
 		printf( "SDL could not initialize! SDL Error: %s\n", SDL_GetError() );
 		success = false;
@@ -116,56 +119,49 @@ SDL_Texture* Game::loadTexture( std::string path )
 	return newTexture;
 }
 
-void Game::checkCollision(){
-	for (auto itEgg = eggs.cbegin(); itEgg != eggs.end(); itEgg++){
-	for (auto itNest = nests.cbegin(); itNest != nests.end(); itNest++){
-		SDL_Rect eggMover = (*itEgg)->getMover();
-		SDL_Rect nestMover = (*itNest)->getMover();
-
-		
-		if(nestMover.x < eggMover.x && eggMover.x < nestMover.x + nestMover.w  && eggMover.y > nestMover.y){
-			pigeons.push_back(new Pigeon(assets,eggMover, true));
-			delete (*itEgg);
-			eggs.erase(itEgg--);
-			break;
-		}
-
-	}	
+void Game::updateEggs(){
+	//check the collision of eggs and nests here
+	//If an egg is dropped in a nest, produce a new baby pigeon
+	//if the egg is dropped on floor, remove it from list.
 }
-}
-void Game::update(){
-
-	for (auto itr = pigeons.cbegin(); itr != pigeons.end(); itr++){
-		if(rand()%100 < 2){
-			if((*itr)->layEgg())			
-				eggs.push_back(new Egg(assets, (*itr)->getMover()));
+void Game::updatePigeons(){
+	//Iterate over the link list of pigeons and generated eggs with 2% probability
+	//Remove such pigeons from the list which have laid 4 eggs.
+	for (list<Pigeon*>::iterator i = pigeons.begin(); i!=pigeons.end(); i++){
+		if(!((*i)->isAlive())){
+			pigeons.pop_back();
 		}
-	}
-
-	for (auto itr = pigeons.cbegin(); itr != pigeons.end(); itr++){
-		if ((*itr)->isAlive()) {
-			delete (*itr);
-			pigeons.erase(itr--);
+		else{
+			(*i)->layEgg();
 		}
-	}
-	for (auto itr = eggs.cbegin(); itr != eggs.end(); itr++){
-		if ((*itr)->dropped()) {
-			delete (*itr);
-			eggs.erase(itr--);
-		}		
-	}
+		// else{
+		// 	Egg * myob = new Egg(assets);
 
-	checkCollision();
+		// 	myob->mover.x = (*i)->mover.x;
+		// 	myob->mover.y = (*i)->mover.y;
+		// }
+	}
 }
 
 void Game::drawAllObjects(){
 		//draw the objects here
-	for(auto p: pigeons)
-		p->draw(gRenderer);	//draws object on renderer
-	for (auto n: nests)
-		n->draw(gRenderer);
-	for (auto e: eggs)
-		e->draw(gRenderer);
+		// list<Pigeon*>::iterator it;
+		// for(it = pigeons.begin(); it!=pigeons.end(); it++){
+		// 	// cout << "element" <<endl;
+		// 	(*it)->draw(gRenderer);
+		// }
+		// for(list<Nest*>::iterator ii =  nests.begin(); ii!=nests.end(); ii++){
+		// 	(*ii)->draw(gRenderer);
+		// 	cout <<nests.size() <<endl;
+		// }
+		for(list<Unit*>::iterator ii =  items.begin(); ii!=items.end(); ii++){
+			(*ii)->draw(gRenderer);
+
+		}
+		for (list<Pigeon*>::iterator i = pigeons.begin(); i!=pigeons.end(); i++){
+			(*i)->draw(gRenderer);
+		}
+	
 }
 
 void Game::run( )
@@ -176,10 +172,6 @@ void Game::run( )
 
 	//Event handler
 	SDL_Event e;
-	// Pigeon pigeons[10];
-
-	
-
 	//While application is running
 	while( !quit )
 	{
@@ -198,22 +190,38 @@ void Game::run( )
 				SDL_GetMouseState(&xMouse,&yMouse);
 				
 				if(yMouse < 300){
-					SDL_Rect rect={xMouse-25, yMouse-25, 50, 50};
-					pigeons.push_back(new Pigeon(assets, rect));
+					// Create a new Pigeon
+					Pigeon *mypigeon = new Pigeon(assets);
+					
+					mypigeon->mover.x = xMouse;
+					mypigeon->mover.y = yMouse;
+					// pigeons.push_back(mypigeon);
+					pigeons.push_back(mypigeon);
+					// mypigeon->assets = assets;
+					// SDL_RenderCopy(gRenderer, assets, NULL, NULL)
 				}
 				else{
-					SDL_Rect rect={xMouse-25, yMouse-25, 50, 50};
-					nests.push_back(new Nest(assets, rect));
+					// Create a new Nest
+					Nest *mynest = new Nest(assets);
+					
+					mynest->mover.x = xMouse-20;
+					mynest->mover.y = yMouse-20;
+					// nests.push_back(mynest);
+					items.push_back(mynest);
+					// cout << "nest created!" <<endl;
 				}
-				break;
+				
 			}
 		}
-		update();// updates the objects for possible new eggs and baby pigeons.
 
 		SDL_RenderClear(gRenderer); //removes everything from renderer
 		SDL_RenderCopy(gRenderer, gTexture, NULL, NULL);//Draws background to renderer
-
+		// SDL_RenderCopy(gRenderer, assets, NULL, NULL);
+		
+		updatePigeons();
+		updateEggs();
 		drawAllObjects();//draws all objects
+
 
 		SDL_RenderPresent(gRenderer); //displays the updated renderer
 		SDL_Delay(200);	//causes sdl engine to delay for specified miliseconds

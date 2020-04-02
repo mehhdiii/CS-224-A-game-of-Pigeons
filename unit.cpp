@@ -1,10 +1,19 @@
-#include "unit.hpp"
+#include"unit.hpp"
+#include<iostream>
+using namespace std;
 
-
-void Unit::draw(SDL_Renderer* renderer){
-    SDL_RenderCopy(renderer, assets, &src, &mover);
+Unit::Unit (SDL_Texture* input_texture): assets(input_texture){
+    // cout << "a unit created" <<endl;
 }
 
-Unit::Unit(SDL_Texture* tex): assets(tex){}
+void Unit::draw(SDL_Renderer* renderer){
 
-SDL_Rect Unit::getMover(){return mover;}
+    // SDL_RenderClear( renderer );
+    SDL_RenderCopy(renderer, assets, NULL, NULL);
+    // SDL_RenderPresent( renderer );
+    
+}
+Unit::~Unit(){}
+// SDL_Rect Unit::setMover(){
+    
+// }

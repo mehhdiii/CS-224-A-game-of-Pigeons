@@ -4,16 +4,31 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "build project",
+            "label": "build",
             "type": "shell",
             "command": "g++",
             "args": [
-                "*.cpp", 
-                "-I/usr/include/SDL2", 
-                "-lSDL2", 
+                "-g",
+                "*.cpp",
+                "-I",
+                "C:/SDL2-2.0.10/x86_64-w64-mingw32/include/SDL2",
+                "-I",
+                "C:/SDL2_image-2.0.5/x86_64-w64-mingw32/include/SDL2",
+                "-L",
+                "C:/SDL2-2.0.10/x86_64-w64-mingw32/lib",
+                "-L",
+                "C:/SDL2_image-2.0.5/x86_64-w64-mingw32/lib",
+                "-lmingw32",
+                "-lSDL2main",
+                "-lSDL2",
+                "-lopengl32",
                 "-lSDL2_image"
-            ], 
-            "group": {"kind": "build","isDefault": true}
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": "$gcc"
         }
     ]
 }

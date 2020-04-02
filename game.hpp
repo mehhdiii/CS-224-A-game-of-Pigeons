@@ -1,3 +1,4 @@
+#pragma once
 #include <SDL.h>
 #include <SDL_image.h>
 #include <stdio.h>
@@ -10,7 +11,6 @@
 #include "pigeon.hpp"
 #include "egg.hpp"
 #include "nest.hpp"
-#pragma once
 using namespace std;
 
 class Game{
@@ -29,11 +29,11 @@ class Game{
     //global reference to png image sheets
     SDL_Texture* assets=NULL;
 
-    list<Pigeon*> pigeons;
-    list<Egg*> eggs;
-    list<Nest*> nests;
+    //You may use C++ linked lists, or you can create your own.
 
-    
+
+    list<Unit*> items;   
+    list <Pigeon*> pigeons;
 
 
 public:
@@ -43,8 +43,8 @@ public:
     void close();
     SDL_Texture* loadTexture( std::string path );
     void run();
-    void update();
-    void checkCollision();
+    void updateEggs();
+    void updatePigeons();
     void drawAllObjects();
 };
 

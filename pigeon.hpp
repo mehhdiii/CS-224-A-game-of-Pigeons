@@ -1,5 +1,6 @@
 #pragma once
 #include "unit.hpp"
+#include "Egg.hpp"
 class Pigeon: public Unit{
     int eggsLaid; //no. of eggs laid
     bool baby;      // is it a baby pigeon?
@@ -12,4 +13,5 @@ public:
     void draw(SDL_Renderer*);
     bool layEgg();
     bool isAlive();
+    ~Pigeon();
 };
