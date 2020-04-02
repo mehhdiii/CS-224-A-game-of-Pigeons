@@ -125,8 +125,21 @@ void Game::updateEggs(){
 	//if the egg is dropped on floor, remove it from list.
 	// if(items)
 	//
-	int floor_x = SCREEN_WIDTH;
-	int floor_y =  SCREEN_HEIGHT;
+	int x_range = 25;
+	int y_range = 25;
+	for (list<Egg*>::iterator i = eggs.begin(); i!=eggs.end(); i++){
+		// int x_start = 235;
+		for (list<Nest*>::iterator j = nests.begin(); j!=nests.end(); j++){
+			if (/*(*i)->mover.x >= (*j)->mover.x  &&*/(*i)->mover.x <= (*j)->mover.x+x_range && (*i)->mover.x >= (*j)->mover.x-x_range && (*i)->mover.y <= (*j)->mover.y+y_range && (*i)->mover.y >= (*j)->mover.y-y_range){
+				eggs.remove(*i);
+				break;
+			}
+		}
+		
+
+		
+	}
+	// if ()
 
 }
 void Game::updatePigeons(){
@@ -144,7 +157,7 @@ void Game::updatePigeons(){
 				Egg * newobj = new Egg(assets);
 				newobj->mover.x = (*i)->mover.x+4;
 				newobj->mover.y = (*i)->mover.y+40;
-				items.push_back(newobj);
+				eggs.push_back(newobj);
 				
 				
 			}
@@ -173,8 +186,14 @@ void Game::drawAllObjects(){
 		for(list<Unit*>::iterator ii =  items.begin(); ii!=items.end(); ii++){
 			(*ii)->draw(gRenderer);
 		}
+		for(list<Nest*>::iterator i = nests.begin(); i!=nests.end(); i++){
+			(*i)->draw(gRenderer);
+		}
 
 		for (list<Pigeon*>::iterator i = pigeons.begin(); i!=pigeons.end(); i++){
+			(*i)->draw(gRenderer);
+		}
+		for (list<Egg*>::iterator i = eggs.begin(); i!=eggs.end(); i++){
 			(*i)->draw(gRenderer);
 		}
 	
@@ -219,10 +238,10 @@ void Game::run( )
 				else{
 					// Create a new Nest
 					Nest *mynest = new Nest(assets);
-					mynest->mover.x = xMouse-20;
-					mynest->mover.y = yMouse-20;
+					mynest->mover.x = xMouse-25;
+					mynest->mover.y = yMouse-25;
 					// nests.push_back(mynest);
-					items.push_back(mynest);
+					nests.push_back(mynest);
 					// cout << "nest created!" <<endl;
 				}
 				

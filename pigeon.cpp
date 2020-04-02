@@ -3,7 +3,7 @@
 
 using namespace std;
 
-Pigeon::Pigeon(SDL_Texture* texture ): Unit(texture){
+Pigeon::Pigeon(SDL_Texture* texture ): Unit(texture), eggsLaid(0), frame(0) {
     src[0] = {0,0,160,133};
     src[1] = {0,133,160,133};
     src[2] = {0,266,160,133};
