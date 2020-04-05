@@ -1,8 +1,8 @@
 #include"nest.hpp"
 
-Nest::Nest(SDL_Texture * texture):Unit(texture){
+Nest::Nest(SDL_Texture * texture):Unit(texture), src({170,192,440,406}){
 
-    src = {170,192,440,406}; 
+    
 }
 
 

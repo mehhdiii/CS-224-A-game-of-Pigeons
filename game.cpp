@@ -155,6 +155,12 @@ void Game::updateEggs(){
 				Mix_PlayChannel( -1, eggy, 0 ); //play the egg breaking sound here
 				eggs.remove(*i);
 				nests.remove(*j); //remove the collided nest as well. or you can make the nest highlighted so that it is removed in the next collision
+				
+				//make a new baby
+				Pigeon * obj = new Pigeon(assets, true);
+				obj->mover.x = (*j)->mover.x;
+				obj->mover.y = (*j)->mover.y; 
+				pigeons.push_back(obj);
 				break;
 			}
 			
@@ -298,7 +304,7 @@ void Game::run( )
 
 
 		SDL_RenderPresent(gRenderer); //displays the updated renderer
-		SDL_Delay(80);	//causes sdl engine to delay for specified miliseconds
+		SDL_Delay(180);	//causes sdl engine to delay for specified miliseconds
 		
 	}
 			

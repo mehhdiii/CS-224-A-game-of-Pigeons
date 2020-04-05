@@ -9,7 +9,7 @@ public:
     const int SCREEN_HEIGHT = 600;
 public:
     Unit(SDL_Texture*);
-    virtual void draw(SDL_Renderer*);
+    virtual void draw(SDL_Renderer*) = 0;
     SDL_Rect getMover(int,int);
     virtual ~Unit();
 };

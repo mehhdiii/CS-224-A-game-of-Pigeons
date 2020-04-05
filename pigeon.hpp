@@ -9,7 +9,7 @@ class Pigeon: public Unit{
 public:
     Pigeon(SDL_Texture*);
     Pigeon(SDL_Texture*, SDL_Rect);
-    Pigeon(SDL_Texture*, SDL_Rect, bool);
+    Pigeon(SDL_Texture*, bool);
     void draw(SDL_Renderer*);
     bool layEgg();
     bool isAlive();
