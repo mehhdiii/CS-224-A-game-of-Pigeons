@@ -8,6 +8,8 @@
 #include <stdlib.h>
 #include <time.h>
 #include <list>
+#include<vector>
+// #include<ctime>
 
 #include "pigeon.hpp"
 #include "egg.hpp"
@@ -54,5 +56,6 @@ public:
     void updateEggs();
     void updatePigeons();
     void drawAllObjects();
+    bool pred(Egg*, int, int);
 };
 

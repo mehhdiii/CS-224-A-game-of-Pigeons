@@ -139,6 +139,12 @@ SDL_Texture* Game::loadTexture( std::string path )
 	return newTexture;
 }
 
+bool Game::pred(Egg * myobj, int x_check, int y_check){
+	if(myobj->mover.x>x_check && myobj->mover.x < x_check+50 && myobj->mover.y>y_check && myobj->mover.y<y_check+50){
+		return true;
+	}
+	return false;
+}
 void Game::updateEggs(){
 	//check the collision of eggs and nests here
 	//If an egg is dropped in a nest, produce a new baby pigeon
@@ -147,54 +153,105 @@ void Game::updateEggs(){
 	//
 	int x_range = 25;
 	int y_range = 25;
-	for (list<Egg*>::iterator i = eggs.begin(); i!=eggs.end(); i++){
+	// for (list<Nest*>::iterator x = nests.begin(); x!=nests.end(); x++){
+	// 	std::remove_if(eggs.begin(), eggs.end(), pred());
+	// }
+	list<Egg*>::iterator i = eggs.begin();
+	list<Nest*>::iterator j = nests.begin();
+	list<Egg*>::iterator temp;
+	while(i!=eggs.end()){
+		temp = i; //store the current pointer
+		++i; //increment the pointer to the next object
 		
-		for (list<Nest*>::iterator j = nests.begin(); j!=nests.end(); j++){
-			//check for a collision:
-			if ( (*i)->mover.x >= (*j)->mover.x  && (*i)->mover.x <= (*j)->mover.x+x_range && (*i)->mover.x >= (*j)->mover.x-x_range && (*i)->mover.y <= (*j)->mover.y+y_range && (*i)->mover.y >= (*j)->mover.y-y_range){
+		for(j = nests.begin(); j!=nests.end();j++){ //run throughout the nests list to check for collisions
+			
+			if((*temp)->mover.x >= (*j)->mover.x  && (*temp)->mover.x <= (*j)->mover.x+x_range && (*temp)->mover.x >= (*j)->mover.x-x_range && (*temp)->mover.y <= (*j)->mover.y+y_range && (*temp)->mover.y >= (*j)->mover.y-y_range){
 				Mix_PlayChannel( -1, eggy, 0 ); //play the egg breaking sound here
-				eggs.remove(*i);
-				nests.remove(*j); //remove the collided nest as well. or you can make the nest highlighted so that it is removed in the next collision
+				// delete *temp;
+				eggs.remove(*temp);
 				
 				//make a new baby
 				Pigeon * obj = new Pigeon(assets, true);
 				obj->mover.x = (*j)->mover.x;
 				obj->mover.y = (*j)->mover.y; 
 				pigeons.push_back(obj);
-				break;
 			}
+		}
+		
+		
+		
+
+	}
+	// while (i!=eggs.end()){
+	// 	if((*i)->mover.y>SCREEN_HEIGHT-50){
+	// 		eggs.remove(*(i++));
+	// 		break;
+	// 	}
+	// 	else if (i!=eggs.end()){
+	// 		j = nests.begin();
+	// 		while (j!=nests.end() && i!=eggs.end()){
+	// 		//check for a collision:
+	// 			if ( (*i)->mover.x >= (*j)->mover.x  && (*i)->mover.x <= (*j)->mover.x+x_range && (*i)->mover.x >= (*j)->mover.x-x_range && (*i)->mover.y <= (*j)->mover.y+y_range && (*i)->mover.y >= (*j)->mover.y-y_range){
+	// 				Mix_PlayChannel( -1, eggy, 0 ); //play the egg breaking sound here
+	// 				eggs.remove(*(i++));
+	// 				// nests.remove(*(j++)); //remove the collided nest as well. or you can make the nest highlighted so that it is removed in the next collision
+					
+	// 				//make a new baby
+	// 				Pigeon * obj = new Pigeon(assets, true);
+	// 				obj->mover.x = (*j)->mover.x;
+	// 				obj->mover.y = (*j)->mover.y; 
+	// 				pigeons.push_back(obj);
+					
+					
+	// 			}
+				
+	// 			j++;
 			
 		
-		}
-		if((*i)->mover.y>SCREEN_HEIGHT-50){
-			eggs.remove(*i);
-		}
+	// 		}
+		
+		
+		
+
+	// }
+	// else
+	// 	{
+	// 		break;
+	// 	}
+		
+		
 
 		
-	}
+	// }
 	// if ()
 
 }
 void Game::updatePigeons(){
 	//Iterate over the link list of pigeons and generated eggs with 2% probability
 	//Remove such pigeons from the list which have laid 4 eggs.
-	for (list<Pigeon*>::iterator i = pigeons.begin(); i!=pigeons.end(); i++){
-		if(!(*i)->isAlive()){
+	list<Pigeon*>::iterator i = pigeons.begin();
+	list<Pigeon*>::iterator temp;
+	// int test = 0;
+	while (i!=pigeons.end() && !pigeons.empty()){
+		temp = i++;
+		// cout << test++ <<endl;
+		if(!(*temp)->isAlive()){
 			//removing pigeon:
-			pigeons.pop_back();
+			pigeons.remove(*temp);
+			
 		}
 		else{
 			if(rand()%50==0 ){
-
-				(*i)->layEgg();
+				
+				(*temp)->layEgg();
 				Egg * newobj = new Egg(assets);
-				newobj->mover.x = (*i)->mover.x+4;
-				newobj->mover.y = (*i)->mover.y+40;
+				newobj->mover.x = (*temp)->mover.x+4;
+				newobj->mover.y = (*temp)->mover.y+40;
 				eggs.push_back(newobj);
 				
 				
 			}
-			
+		
 		}
 		// else{
 		// 	Egg * myob = new Egg(assets);
@@ -240,15 +297,17 @@ void Game::run( )
 
 	//Event handler
 	SDL_Event e;
-	//While application is running
-	while( !quit )
-	{
-		//play the background music
-		if( Mix_PlayingMusic() == 0 )
+	//play the background music
+	if( Mix_PlayingMusic() == 0 )
 			{
 			//Play the music
 			Mix_PlayMusic( background_music, 1 );
 		}
+	//While application is running
+	while( !quit )
+	{
+		
+		
 		//Handle events on queue
 		while( SDL_PollEvent( &e ) != 0 )
 		{
@@ -291,6 +350,20 @@ void Game::run( )
 				}
 				
 				
+			}
+			if (e.type == SDL_KEYDOWN){
+				cout << "m pressed" <<endl;
+				if( Mix_PausedMusic() == 1 )
+					{
+						//Resume the music
+						Mix_ResumeMusic();
+					}
+					//If the music is playing
+				else
+					{
+						//Pause the music
+						Mix_PauseMusic();
+					}
 			}
 		}
 
