@@ -26,8 +26,7 @@ Pigeon::Pigeon(SDL_Texture* texture, bool baba): Unit(texture), eggsLaid(0), fra
 
 }
 bool Pigeon::layEgg(){
-    // SDL_RenderCopy(renderer, assets, ->, &mover);
-    if (eggsLaid<4){
+    if (!baby){
         eggsLaid++;
         return true;
     }
@@ -75,7 +74,7 @@ void Pigeon::draw(SDL_Renderer * renderer){
 
 bool Pigeon::isAlive(){
     // return layEgg();
-    return (eggsLaid<4);
+    return (eggsLaid<=5);
 
 }
 

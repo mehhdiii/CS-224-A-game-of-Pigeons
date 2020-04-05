@@ -1,7 +1,7 @@
 #include "SDL.h"
 #pragma once
 class Unit{
-public:
+protected:
     SDL_Texture* assets;
     SDL_Rect src;
     SDL_Rect mover = {0,0,50,50};
@@ -10,6 +10,7 @@ public:
 public:
     Unit(SDL_Texture*);
     virtual void draw(SDL_Renderer*) = 0;
-    SDL_Rect getMover(int,int);
+    SDL_Rect getMover();
+    void setCoordinates(int, int);
     virtual ~Unit();
 };

@@ -36,7 +36,7 @@ class Game{
 
     
 
-    list<Unit*> items;   
+    // list<Unit*> items;   
     list <Pigeon*> pigeons;
     list<Egg*> eggs;
     list<Nest*> nests;

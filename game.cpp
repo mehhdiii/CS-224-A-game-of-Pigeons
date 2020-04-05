@@ -139,12 +139,12 @@ SDL_Texture* Game::loadTexture( std::string path )
 	return newTexture;
 }
 
-bool Game::pred(Egg * myobj, int x_check, int y_check){
-	if(myobj->mover.x>x_check && myobj->mover.x < x_check+50 && myobj->mover.y>y_check && myobj->mover.y<y_check+50){
-		return true;
-	}
-	return false;
-}
+// bool Game::pred(Egg * myobj, int x_check, int y_check){
+// 	if(myobj->getMover().x>x_check && myobj->mover.x < x_check+50 && myobj->mover.y>y_check && myobj->mover.y<y_check+50){
+// 		return true;
+// 	}
+// 	return false;
+// }
 void Game::updateEggs(){
 	//check the collision of eggs and nests here
 	//If an egg is dropped in a nest, produce a new baby pigeon
@@ -165,16 +165,17 @@ void Game::updateEggs(){
 		
 		for(j = nests.begin(); j!=nests.end();j++){ //run throughout the nests list to check for collisions
 			
-			if((*temp)->mover.x >= (*j)->mover.x  && (*temp)->mover.x <= (*j)->mover.x+x_range && (*temp)->mover.x >= (*j)->mover.x-x_range && (*temp)->mover.y <= (*j)->mover.y+y_range && (*temp)->mover.y >= (*j)->mover.y-y_range){
+			if((*temp)->getMover().x >= (*j)->getMover().x  && (*temp)->getMover().x <= (*j)->getMover().x+x_range && (*temp)->getMover().x >= (*j)->getMover().x-x_range && (*temp)->getMover().y <= (*j)->getMover().y+y_range && (*temp)->getMover().y >= (*j)->getMover().y-y_range){
 				Mix_PlayChannel( -1, eggy, 0 ); //play the egg breaking sound here
-				// delete *temp;
-				eggs.remove(*temp);
+				delete *temp;
+				eggs.remove(*temp); //removing egg object if collison with pigoen detected
 				
 				//make a new baby
-				Pigeon * obj = new Pigeon(assets, true);
-				obj->mover.x = (*j)->mover.x;
-				obj->mover.y = (*j)->mover.y; 
+				Pigeon * obj = new Pigeon(assets, true); //creating a new baby pigeon object
+				obj->setCoordinates((*j)->getMover().x, (*j)->getMover().y); //setting coordinates of the object
 				pigeons.push_back(obj);
+				// break;
+				
 			}
 		}
 		
@@ -182,100 +183,45 @@ void Game::updateEggs(){
 		
 
 	}
-	// while (i!=eggs.end()){
-	// 	if((*i)->mover.y>SCREEN_HEIGHT-50){
-	// 		eggs.remove(*(i++));
-	// 		break;
-	// 	}
-	// 	else if (i!=eggs.end()){
-	// 		j = nests.begin();
-	// 		while (j!=nests.end() && i!=eggs.end()){
-	// 		//check for a collision:
-	// 			if ( (*i)->mover.x >= (*j)->mover.x  && (*i)->mover.x <= (*j)->mover.x+x_range && (*i)->mover.x >= (*j)->mover.x-x_range && (*i)->mover.y <= (*j)->mover.y+y_range && (*i)->mover.y >= (*j)->mover.y-y_range){
-	// 				Mix_PlayChannel( -1, eggy, 0 ); //play the egg breaking sound here
-	// 				eggs.remove(*(i++));
-	// 				// nests.remove(*(j++)); //remove the collided nest as well. or you can make the nest highlighted so that it is removed in the next collision
-					
-	// 				//make a new baby
-	// 				Pigeon * obj = new Pigeon(assets, true);
-	// 				obj->mover.x = (*j)->mover.x;
-	// 				obj->mover.y = (*j)->mover.y; 
-	// 				pigeons.push_back(obj);
-					
-					
-	// 			}
-				
-	// 			j++;
-			
-		
-	// 		}
-		
-		
-		
-
-	// }
-	// else
-	// 	{
-	// 		break;
-	// 	}
-		
-		
-
-		
-	// }
-	// if ()
 
 }
 void Game::updatePigeons(){
 	//Iterate over the link list of pigeons and generated eggs with 2% probability
 	//Remove such pigeons from the list which have laid 4 eggs.
-	list<Pigeon*>::iterator i = pigeons.begin();
-	list<Pigeon*>::iterator temp;
-	// int test = 0;
+	list<Pigeon*>::iterator i = pigeons.begin(); //main iterator used to traverse the list
+	list<Pigeon*>::iterator temp; //dummy iterator to store the previous value of iterator 
+
 	while (i!=pigeons.end() && !pigeons.empty()){
-		temp = i++;
-		// cout << test++ <<endl;
-		if(!(*temp)->isAlive()){
+		temp = i++; //storing the value of current iterator while incrementing the original variable so that a deletion of object does not results in a garbage value of pointer i. This is a major issue when deleting object in a loop
+		
+		if(!(*temp)->isAlive()){ //if pigeon has laid 5 eggs then this would evaluate to true and pigoen would be removed from the list
 			//removing pigeon:
 			pigeons.remove(*temp);
 			
 		}
 		else{
-			if(rand()%50==0 ){
+			if(rand()%50==0){
 				
-				(*temp)->layEgg();
-				Egg * newobj = new Egg(assets);
-				newobj->mover.x = (*temp)->mover.x+4;
-				newobj->mover.y = (*temp)->mover.y+40;
-				eggs.push_back(newobj);
+				if ((*temp)->layEgg()){ //make sure the pigeon is not baby and can lay eggs
+					Egg * newobj = new Egg(assets); //creating a new egg object
+					newobj->setCoordinates((*temp)->getMover().x+4, (*temp)->getMover().y+40); //setting its coordinates same as that of pigeon object	
+					eggs.push_back(newobj); //adding the object to its respective list
+				
+				}
 				
 				
 			}
 		
 		}
-		// else{
-		// 	Egg * myob = new Egg(assets);
 
-		// 	myob->mover.x = (*i)->mover.x;
-		// 	myob->mover.y = (*i)->mover.y;
-		// }
 	}
 }
 
 void Game::drawAllObjects(){
 		//draw the objects here
-		// list<Pigeon*>::iterator it;
-		// for(it = pigeons.begin(); it!=pigeons.end(); it++){
-		// 	// cout << "element" <<endl;
-		// 	(*it)->draw(gRenderer);
-		// }
-		// for(list<Nest*>::iterator ii =  nests.begin(); ii!=nests.end(); ii++){
+		// for(list<Unit*>::iterator ii =  items.begin(); ii!=items.end(); ii++){
 		// 	(*ii)->draw(gRenderer);
-		// 	cout <<nests.size() <<endl;
 		// }
-		for(list<Unit*>::iterator ii =  items.begin(); ii!=items.end(); ii++){
-			(*ii)->draw(gRenderer);
-		}
 		for(list<Nest*>::iterator i = nests.begin(); i!=nests.end(); i++){
 			(*i)->draw(gRenderer);
 		}
@@ -324,35 +270,29 @@ void Game::run( )
 				
 				if(yMouse < 300){
 					// Create a new Pigeon
-					Pigeon *mypigeon = new Pigeon(assets);
+					Pigeon *mypigeon = new Pigeon(assets); //making a new pigeon object
 					if(xMouse>SCREEN_WIDTH-50){
-						mypigeon->mover.x = SCREEN_WIDTH-50;
-						mypigeon->mover.y = yMouse;
+						mypigeon->setCoordinates(SCREEN_WIDTH-50, yMouse); //setting the coordinates at which to draw the object
 					}
 					else{
-						mypigeon->mover.x = xMouse;
-						mypigeon->mover.y = yMouse;
+						mypigeon->setCoordinates(xMouse, yMouse); //setting the coordinates at which to draw the object
 					}				
 					
-					// pigeons.push_back(mypigeon);
-					pigeons.push_back(mypigeon);
-					// mypigeon->assets = assets;
-					// SDL_RenderCopy(gRenderer, assets, NULL, NULL)
+					
+					pigeons.push_back(mypigeon); // adding the new object to the pigeons list
+					
 				}
-				else{
-					// Create a new Nest
-					Nest *mynest = new Nest(assets);
-					mynest->mover.x = xMouse-25;
-					mynest->mover.y = yMouse-25;
-					// nests.push_back(mynest);
-					nests.push_back(mynest);
-					// cout << "nest created!" <<endl;
+				else{ //otherwise create a nest
+					// Creating a new Nest
+					Nest *mynest = new Nest(assets); //making a new nest object
+					mynest->setCoordinates(xMouse-25, yMouse-25); //setting its coordinates
+					nests.push_back(mynest); //adding it to the list
 				}
 				
 				
 			}
 			if (e.type == SDL_KEYDOWN){
-				cout << "m pressed" <<endl;
+				
 				if( Mix_PausedMusic() == 1 )
 					{
 						//Resume the music
@@ -369,11 +309,10 @@ void Game::run( )
 
 		SDL_RenderClear(gRenderer); //removes everything from renderer
 		SDL_RenderCopy(gRenderer, gTexture, NULL, NULL);//Draws background to renderer
-		// SDL_RenderCopy(gRenderer, assets, NULL, NULL);
 		
-		updatePigeons();
-		updateEggs();
-		drawAllObjects();//draws all objects
+		updatePigeons(); //updates the pigeons 
+		updateEggs(); //updates the eggs and nests
+		drawAllObjects(); //draws all objects
 
 
 		SDL_RenderPresent(gRenderer); //displays the updated renderer
