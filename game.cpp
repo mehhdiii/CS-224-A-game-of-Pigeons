@@ -284,6 +284,8 @@ void Game::run( )
 				if(yMouse < 300){
 					// Create a new Pigeon
 					Pigeon *mypigeon = new Pigeon(assets); //making a new pigeon object
+					
+					
 					if(xMouse>SCREEN_WIDTH-50){
 						mypigeon->setCoordinates(SCREEN_WIDTH-50, yMouse); //setting the coordinates at which to draw the object
 					}
@@ -298,8 +300,43 @@ void Game::run( )
 				else{ //otherwise create a nest
 					// Creating a new Nest
 					Nest *mynest = new Nest(assets); //making a new nest object
-					mynest->setCoordinates(xMouse-25, yMouse-25); //setting its coordinates
+					
+					//check bottom right boundaries::
+					if(xMouse>SCREEN_WIDTH-50){ //checking the right and bottm boundaries
+						if (yMouse>SCREEN_HEIGHT-50){ //right and bottom out
+							mynest->setCoordinates(SCREEN_WIDTH-50, SCREEN_HEIGHT-50);
+						}
+						else{ //right out
+							mynest->setCoordinates(SCREEN_WIDTH-50, yMouse); //setting the coordinates at which to draw the object
+						}
+						
+					
+					}
+					else if (yMouse>SCREEN_HEIGHT-50){ //bottom out
+						mynest->setCoordinates(xMouse, SCREEN_HEIGHT-50);
+					}
+
+					//check the left and top boundaries::
+					// else if(xMouse<12){ 
+					// 	if (yMouse<12){ //left and bottom out
+					// 		mynest->setCoordinates(12, 12);
+					// 	}
+					// 	else{ //left out
+					// 		mynest->setCoordinates(12, yMouse); //setting the coordinates at which to draw the object
+					// 	}
+						
+					
+					// }
+					// else if (yMouse<12){ //top out
+					// 	mynest->setCoordinates(xMouse, 12);
+					// }
+					//else both fine::
+					else{
+						mynest->setCoordinates(xMouse-25, yMouse-25); //setting its coordinates
+						
+					}
 					nests.push_back(mynest); //adding it to the list
+					
 				}
 				
 				
