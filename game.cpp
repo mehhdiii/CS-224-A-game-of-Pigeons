@@ -174,7 +174,7 @@ void Game::updateEggs(){
 				Pigeon * obj = new Pigeon(assets, true); //creating a new baby pigeon object
 				obj->setCoordinates((*j)->getMover().x, (*j)->getMover().y); //setting coordinates of the object
 				pigeons.push_back(obj);
-				// break;
+				break;
 				
 			}
 		}
@@ -240,18 +240,19 @@ void Game::run( )
     SDL_RenderClear( gRenderer );
 	//Main loop flag
 	bool quit = false;
-
+	bool pause = false;
 	//Event handler
 	SDL_Event e;
-	//play the background music
-	if( Mix_PlayingMusic() == 0 )
-			{
-			//Play the music
-			Mix_PlayMusic( background_music, 1 );
-		}
+	
 	//While application is running
 	while( !quit )
 	{
+		//play the background music
+		if( Mix_PlayingMusic() == 0 )
+				{
+				//Play the music
+				Mix_PlayMusic( background_music, 1 );
+		}
 		
 		
 		//Handle events on queue
@@ -262,8 +263,20 @@ void Game::run( )
 			{
 				quit = true;
 			}
+			//user requests pause
+			if (e.type==SDL_KEYDOWN ){
+				if (e.key.keysym.sym == SDLK_ESCAPE)
+					pause = !pause;
+					if(pause){ //pause the music 
+						Mix_PauseMusic();
+					}
+					else{ //play the music
+						Mix_ResumeMusic();
+					}
 
-			if(e.type == SDL_MOUSEBUTTONDOWN && e.button.button == SDL_BUTTON_LEFT){
+			}
+
+			if(e.type == SDL_MOUSEBUTTONDOWN && e.button.button == SDL_BUTTON_LEFT &&!pause){
 				//this is a good location to add pigeon in linked list.
 				int xMouse, yMouse;
 				SDL_GetMouseState(&xMouse,&yMouse);
@@ -291,22 +304,30 @@ void Game::run( )
 				
 				
 			}
-			if (e.type == SDL_KEYDOWN){
-				
-				if( Mix_PausedMusic() == 1 )
+			if (e.type == SDL_KEYDOWN && !pause){
+				switch (e.key.keysym.sym)
+				{
+				case SDLK_m:
+					if( Mix_PausedMusic() == 1 )
 					{
 						//Resume the music
 						Mix_ResumeMusic();
 					}
 					//If the music is playing
-				else
+					else
 					{
 						//Pause the music
 						Mix_PauseMusic();
 					}
-			}
-		}
+				
+				default:
+					break;
+				}
 
+			}
+			
+		}
+		if (!pause){
 		SDL_RenderClear(gRenderer); //removes everything from renderer
 		SDL_RenderCopy(gRenderer, gTexture, NULL, NULL);//Draws background to renderer
 		
@@ -314,9 +335,11 @@ void Game::run( )
 		updateEggs(); //updates the eggs and nests
 		drawAllObjects(); //draws all objects
 
-
+		
 		SDL_RenderPresent(gRenderer); //displays the updated renderer
+		}
 		SDL_Delay(180);	//causes sdl engine to delay for specified miliseconds
+		
 		
 	}
 			

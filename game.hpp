@@ -46,6 +46,8 @@ class Game{
     Mix_Music *background_music = NULL; //plays in the background
     Mix_Chunk *bird1 = NULL;
     Mix_Chunk *bird2 = NULL;
+
+    
 public:
 
     bool init();
