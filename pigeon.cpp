@@ -38,8 +38,8 @@ void Pigeon::draw(SDL_Renderer * renderer){
     // cout << "drawing pigeon" <<endl;
     if (baby = true){
         if (mover.w<50){
-            mover.w+=2;
-            mover.h+=2;
+            mover.w+=1;
+            mover.h+=1;
         }
         else{
             baby = false;
@@ -47,6 +47,7 @@ void Pigeon::draw(SDL_Renderer * renderer){
     }
     SDL_RenderCopy(renderer, assets, &src[frame], &mover);
     frame++;
+    
     if (frame==3) frame = 0; 
     if (mover.x<SCREEN_WIDTH-50){
         mover.x+=5;
@@ -80,7 +81,8 @@ bool Pigeon::isAlive(){
 
 Pigeon::~Pigeon(){
     eggsLaid = 0;
-    src[0] = {0, 0, 0, 0};
-    src[1] = {0, 0, 0, 0};
-    src[2] = {0, 0, 0, 0};
+    // src[0] = {0, 0, 0, 0};
+    // src[1] = {0, 0, 0, 0};
+    // src[2] = {0, 0, 0, 0};
+    // delete src;
 }

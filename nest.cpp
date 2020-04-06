@@ -11,5 +11,6 @@ void Nest::draw(SDL_Renderer* renderer){
 }
 
 Nest::~Nest(){
-    
+    // src = {0, 0, 0, 0};
+
 }

@@ -47,6 +47,9 @@ class Game{
     Mix_Chunk *bird1 = NULL;
     Mix_Chunk *bird2 = NULL;
 
+    //egg limit:
+    int eggs_in = 0;
+    
     
 public:
 
@@ -55,9 +58,10 @@ public:
     void close();
     SDL_Texture* loadTexture( std::string path );
     void run();
-    void updateEggs();
+    bool updateEggs();
     void updatePigeons();
     void drawAllObjects();
-    bool pred(Egg*, int, int);
+    // bool pred(Egg*, int, int);
+    
 };
 

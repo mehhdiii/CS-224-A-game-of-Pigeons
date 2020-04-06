@@ -145,7 +145,7 @@ SDL_Texture* Game::loadTexture( std::string path )
 // 	}
 // 	return false;
 // }
-void Game::updateEggs(){
+bool Game::updateEggs(){
 	//check the collision of eggs and nests here
 	//If an egg is dropped in a nest, produce a new baby pigeon
 	//if the egg is dropped on floor, remove it from list.
@@ -162,20 +162,34 @@ void Game::updateEggs(){
 	while(i!=eggs.end()){
 		temp = i; //store the current pointer
 		++i; //increment the pointer to the next object
+		if ((*temp)->getMover().y>SCREEN_HEIGHT-50){
+			eggs.remove(*temp);
+			if(eggs_in++>5){
+				return true;
+			}
+			// else{
+			// 	return true;
+			// }
+		}
+		else{
+
 		
-		for(j = nests.begin(); j!=nests.end();j++){ //run throughout the nests list to check for collisions
-			
-			if((*temp)->getMover().x >= (*j)->getMover().x  && (*temp)->getMover().x <= (*j)->getMover().x+x_range && (*temp)->getMover().x >= (*j)->getMover().x-x_range && (*temp)->getMover().y <= (*j)->getMover().y+y_range && (*temp)->getMover().y >= (*j)->getMover().y-y_range){
-				Mix_PlayChannel( -1, eggy, 0 ); //play the egg breaking sound here
-				delete *temp;
-				eggs.remove(*temp); //removing egg object if collison with pigoen detected
+			for(j = nests.begin(); j!=nests.end();j++){ //run throughout the nests list to check for collisions
 				
-				//make a new baby
-				Pigeon * obj = new Pigeon(assets, true); //creating a new baby pigeon object
-				obj->setCoordinates((*j)->getMover().x, (*j)->getMover().y); //setting coordinates of the object
-				pigeons.push_back(obj);
-				break;
-				
+				// (*temp)<=(*j)+range && (*temp)>=(*j)-range
+
+				if((*temp)->getMover().x >= (*j)->getMover().x  && (*temp)->getMover().x <= (*j)->getMover().x+40 && (*temp)->getMover().x >= (*j)->getMover().x-x_range && (*temp)->getMover().y <= (*j)->getMover().y+y_range && (*temp)->getMover().y >= (*j)->getMover().y-y_range){
+					Mix_PlayChannel( -1, eggy, 0 ); //play the egg breaking sound here
+					// delete *temp;
+					eggs.remove(*temp); //removing egg object if collison with pigoen detected
+					
+					//make a new baby
+					Pigeon * obj = new Pigeon(assets, true); //creating a new baby pigeon object
+					obj->setCoordinates((*j)->getMover().x, (*j)->getMover().y); //setting coordinates of the object
+					pigeons.push_back(obj);
+					break;
+					
+				}
 			}
 		}
 		
@@ -183,6 +197,7 @@ void Game::updateEggs(){
 		
 
 	}
+	return false;
 
 }
 void Game::updatePigeons(){
@@ -200,7 +215,7 @@ void Game::updatePigeons(){
 			
 		}
 		else{
-			if(rand()%50==0){
+			if(rand()%50==0){ //2 % probability
 				
 				if ((*temp)->layEgg()){ //make sure the pigeon is not baby and can lay eggs
 					Egg * newobj = new Egg(assets); //creating a new egg object
@@ -241,6 +256,7 @@ void Game::run( )
 	//Main loop flag
 	bool quit = false;
 	bool pause = false;
+	bool egg_constraint = false;
 	//Event handler
 	SDL_Event e;
 	
@@ -265,7 +281,7 @@ void Game::run( )
 			}
 			//user requests pause
 			if (e.type==SDL_KEYDOWN ){
-				if (e.key.keysym.sym == SDLK_ESCAPE)
+				if (e.key.keysym.sym == SDLK_ESCAPE){
 					pause = !pause;
 					if(pause){ //pause the music 
 						Mix_PauseMusic();
@@ -273,6 +289,7 @@ void Game::run( )
 					else{ //play the music
 						Mix_ResumeMusic();
 					}
+				}
 
 			}
 
@@ -345,8 +362,10 @@ void Game::run( )
 				switch (e.key.keysym.sym)
 				{
 				case SDLK_m:
-					if( Mix_PausedMusic() == 1 )
+					
+					if( Mix_PausedMusic() == 1 ) //if music is paused
 					{
+						cout << "i as well" <<endl;
 						//Resume the music
 						Mix_ResumeMusic();
 					}
@@ -356,9 +375,8 @@ void Game::run( )
 						//Pause the music
 						Mix_PauseMusic();
 					}
+				break;
 				
-				default:
-					break;
 				}
 
 			}
@@ -369,9 +387,13 @@ void Game::run( )
 		SDL_RenderCopy(gRenderer, gTexture, NULL, NULL);//Draws background to renderer
 		
 		updatePigeons(); //updates the pigeons 
-		updateEggs(); //updates the eggs and nests
+		egg_constraint = updateEggs(); //updates the eggs and nests
 		drawAllObjects(); //draws all objects
 
+		//check if egg constraint has been bypassed:
+		if (egg_constraint){
+			quit = true;
+		}
 		
 		SDL_RenderPresent(gRenderer); //displays the updated renderer
 		}

@@ -11,6 +11,10 @@ public:
     Unit(SDL_Texture*);
     virtual void draw(SDL_Renderer*) = 0;
     SDL_Rect getMover();
+    // bool operator>=(Unit*);
+    // bool operator<=(Unit*);
+    // bool operator==(Unit*);
+    // Unit* operator+(int);
     void setCoordinates(int, int);
     virtual ~Unit();
 };
